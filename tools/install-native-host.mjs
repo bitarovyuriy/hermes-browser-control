@@ -72,14 +72,24 @@ export function nativeMessagingDir(localAppData) {
   return path.join(localAppData, 'hermes', 'native-messaging');
 }
 
+// A path that is absolute on Windows whatever host we run on: `C:\…`, `C:/…` or a UNC share.
+const WINDOWS_ABSOLUTE = /^(?:[A-Za-z]:[\\/]|\\\\)/;
+
 /**
- * Chrome's id for an unpacked extension: SHA-256 of the absolute path's
- * UTF-16LE bytes, first 16 bytes, each nibble mapped to a–p.
+ * Chrome's id for an unpacked extension: SHA-256 of the absolute path's bytes — UTF-16LE
+ * on Windows, UTF-8 on POSIX, which is what Chrome itself hashes — first 16 bytes, each
+ * nibble mapped to a–p.
+ *
+ * A Windows-shaped path is normalised with `path.win32`, so the id does not depend on the
+ * host doing the derivation: `C:\example\extension` yields the same id on Linux CI as on
+ * the Windows machine the vector was measured on.
  */
 export function extensionIdForPath(extensionDir) {
-  const absolute = path.resolve(extensionDir);
-  const native = absolute.replaceAll('/', '\\');
-  const digest = createHash('sha256').update(Buffer.from(native, 'utf16le')).digest();
+  const windows = WINDOWS_ABSOLUTE.test(extensionDir) || process.platform === 'win32';
+  const absolute = windows
+    ? path.win32.resolve(extensionDir.replaceAll('/', '\\'))
+    : path.posix.resolve(extensionDir);
+  const digest = createHash('sha256').update(Buffer.from(absolute, windows ? 'utf16le' : 'utf8')).digest();
   let id = '';
   for (let i = 0; i < 16; i += 1) id += ALPHABET[digest[i] >> 4] + ALPHABET[digest[i] & 0xf];
   return id;

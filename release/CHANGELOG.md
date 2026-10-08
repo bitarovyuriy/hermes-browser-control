@@ -14,6 +14,15 @@ Versions map to Chrome Web Store channels:
 
 ## [Unreleased]
 
+### Fixed
+
+- `tools/install-native-host.mjs`: the unpacked-extension id is now derived host-independently.
+  A Windows-shaped path (`C:\…`, `C:/…`, a UNC share) is normalised with `path.win32` and hashed
+  as UTF-16LE — what Chrome hashes on Windows — while a POSIX path is hashed as UTF-8. Before,
+  `path.resolve` re-rooted `C:\example\extension` into the runner's working directory on Linux,
+  so the pinned Chrome vector (`khljnbaehneoiakcfkbmegihfaokaboc`) failed in CI while passing on
+  Windows. The id for a real Windows install is unchanged.
+
 ## [0.3.0] - 2026-10-08
 
 The side panel is gone: the extension is a bridge for the Hermes runtime, and the only
