@@ -61,6 +61,15 @@ into it (the CDP worker already advertises the `hermes-relay` port and the
 code that is verified, not on a rewrite. `test/e2e/`, the release packaging and the
 scaffold remain valid in their own trees.
 
+## Screens
+
+| The control page (options page) | The toolbar popup, captured live |
+| --- | --- |
+| ![control page](docs/screenshots/control-page-1280x800.png) | ![toolbar popup](docs/screenshots/popup-live-332x422.png) |
+
+`docs/screenshots/control-page-live-1280x800.png` is the same page during a live session —
+state `armed`, mode `tab-group` — captured from a clean profile with the agent holding the tab.
+
 ## Load it
 
     chrome://extensions -> Developer mode -> Load unpacked -> pick `extension/`
