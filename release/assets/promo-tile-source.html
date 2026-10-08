@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Hermes Browser Extension — small promo tile 440x280</title>
+<style>
+  /* Chrome Web Store small promo tile: exactly 440x280, no rounded corners, no text near
+     the edge (store crops/shifts on some surfaces). Render with:
+       chrome.exe --headless=new --disable-gpu --hide-scrollbars --window-size=440,280 \
+         --screenshot=promo-tile-440x280.png file:///.../promo-tile-source.html          */
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 440px; height: 280px; overflow: hidden; }
+  body {
+    background: #16324f;
+    background-image: radial-gradient(120% 90% at 82% 18%, #2b6ea8 0%, #16324f 55%, #0d2135 100%);
+    color: #fff;
+    font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    display: flex; align-items: center; gap: 22px; padding: 0 34px;
+    position: relative;
+  }
+  body::after {
+    /* faint scanline texture, matching the panel splash */
+    content: ""; position: absolute; inset: 0;
+    background-image: repeating-linear-gradient(0deg, rgba(255,255,255,.05) 0 1px, transparent 1px 4px);
+    pointer-events: none;
+  }
+  img { width: 92px; height: 92px; display: block; }
+  .word { position: relative; z-index: 1; }
+  .word b { display: block; font-size: 40px; line-height: .98; letter-spacing: -.5px; font-weight: 800; }
+  .word span { display: block; font-size: 15px; line-height: 1.25; letter-spacing: .06em;
+               text-transform: uppercase; opacity: .85; margin-top: 8px; }
+</style>
+</head>
+<body>
+  <img src="../../assets/icons/icon-128.png" alt="">
+  <div class="word">
+    <b>HERMES</b>
+    <span>Browser<br>Extension</span>
+  </div>
+</body>
+</html>

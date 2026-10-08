@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Hermes Browser Control</title>
+    <link rel="stylesheet" href="control.css" />
+  </head>
+  <body class="popup">
+    <header class="masthead">
+      <h1>Hermes Browser Control</h1>
+      <p>Hermes drives this browser over the loopback relay. This panel is the stop.</p>
+    </header>
+
+    <dl class="readout">
+      <div><dt>State</dt><dd id="stateArmed">idle</dd></div>
+      <div><dt>Mode</dt><dd id="stateMode">none</dd></div>
+      <div><dt>Revision</dt><dd id="stateRev">0</dd></div>
+      <div><dt>Relay</dt><dd id="relayPhase">none</dd></div>
+      <div><dt>Endpoint</dt><dd id="relayUrl" class="dim">none</dd></div>
+    </dl>
+    <div id="status" hidden></div>
+
+    <div class="controls" role="group" aria-label="Session control">
+      <button id="pause" type="button">Pause</button>
+      <button id="resume" type="button">Resume</button>
+      <button id="reconnect" type="button">Reconnect</button>
+      <button id="kill" type="button" class="stop">Kill switch</button>
+      <button id="clearKill" type="button">Clear kill</button>
+    </div>
+    <p class="note">Kill stops the agent and the relay session at once, and stays terminal until cleared.</p>
+
+    <pre id="log" class="log" aria-live="polite"></pre>
+
+    <p class="foot"><a href="#" id="openPage">Open as a full page</a></p>
+    <script type="module" src="control.js"></script>
+  </body>
+</html>

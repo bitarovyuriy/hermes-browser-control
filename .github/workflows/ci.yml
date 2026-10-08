@@ -1,0 +1,35 @@
+name: CI
+
+on:
+  push:
+    branches: ['**']
+  pull_request:
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      # The MVP has no runtime dependencies; the e2e/relay harnesses launch a real Chrome
+      # and (for the relay suite) the transport checkout. On CI these are best-effort, so
+      # the required gates below are the ones that never need a browser.
+
+      - name: Unit + security tests (required)
+        run: npm test
+
+      - name: Secret scan (required)
+        run: npm run scan:secrets
+
+      - name: E2E (real Chrome, best-effort)
+        run: npm run test:e2e
+        continue-on-error: true
+
+      - name: Relay suite (real Chrome + real relay, best-effort)
+        run: npm run test:relay
+        continue-on-error: true

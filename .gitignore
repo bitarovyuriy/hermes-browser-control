@@ -1,0 +1,15 @@
+# Dependencies
+node_modules/
+
+# Build output — the release toolkit writes these; attach them to a GitHub release instead
+release/dist/
+
+# Signing keys. The per-directory .gitignore already hides everything else in here.
+release/keys/*.pem
+
+# Test artefacts (screenshots, logs and the run report from the last E2E pass)
+test/e2e/artifacts/
+
+# Local scratch
+.cache/
+*.log

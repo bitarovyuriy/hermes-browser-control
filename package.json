@@ -1,0 +1,22 @@
+{
+  "name": "hermes-browser-extension-mvp",
+  "version": "0.3.0",
+  "private": true,
+  "type": "module",
+  "description": "Merged MVP of the Hermes browser extension: CDP control slice + loopback relay transport + the operation guard on the live command path.",
+  "scripts": {
+    "test": "node --test \"test/unit/**/*.test.js\" && node --test \"test/security/*.test.mjs\"",
+    "test:unit": "node --test \"test/unit/**/*.test.js\"",
+    "test:security": "node --test \"test/security/*.test.mjs\"",
+    "test:e2e": "node test/e2e/e2e.mjs",
+    "test:relay": "node test/e2e/relay.mjs",
+    "test:relay:native": "node test/e2e/relay.mjs --native-host",
+    "native-host:install": "node tools/install-native-host.mjs",
+    "native-host:check": "node tools/install-native-host.mjs --check",
+    "native-host:uninstall": "node tools/install-native-host.mjs --uninstall",
+    "scan:secrets": "node security/scan-secrets.mjs",
+    "test:all": "npm run test && npm run scan:secrets && npm run test:e2e && npm run test:relay",
+    "release:build": "bash release/scripts/build-release.sh --allow-dirty",
+    "release:verify": "bash release/scripts/verify-package.sh"
+  }
+}

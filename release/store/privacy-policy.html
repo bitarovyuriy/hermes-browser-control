@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Privacy Policy — Hermes Browser Extension</title>
+<style>
+  :root { color-scheme: light dark; }
+  body { font: 16px/1.6 -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+         max-width: 780px; margin: 0 auto; padding: 2.5rem 1.25rem 5rem; }
+  h1 { font-size: 1.9rem; margin-bottom: .2rem; }
+  h2 { font-size: 1.2rem; margin-top: 2rem; }
+  code, pre { font-family: ui-monospace, SFMono-Regular, Consolas, monospace; font-size: .9em; }
+  pre { background: #f4f4f5; padding: .8rem 1rem; border-radius: 8px; overflow-x: auto; }
+  table { border-collapse: collapse; width: 100%; margin: 1rem 0; }
+  th, td { border: 1px solid #d4d4d8; padding: .5rem .6rem; text-align: left; vertical-align: top; }
+  .meta { color: #6b7280; font-size: .92rem; }
+  blockquote { border-left: 4px solid #d4d4d8; margin: 1rem 0; padding: .4rem 1rem; color: #4b5563; }
+  @media (prefers-color-scheme: dark) {
+    pre { background: #1f2937; } th, td { border-color: #374151; }
+    .meta, blockquote { color: #9ca3af; }
+  }
+</style>
+</head>
+<body>
+<h1>Privacy Policy — Hermes Browser Extension</h1>
+<p class="meta"><strong>Effective date:</strong> 2026-10-08 &nbsp;·&nbsp;
+<strong>Last updated:</strong> 2026-10-08 &nbsp;·&nbsp;
+<strong>Applies to:</strong> Hermes Browser Extension, version 0.2.0 and later.</p>
+
+<blockquote>Draft for review. Items marked <strong>[CONFIRM]</strong> must be verified against
+the shipped build and the legal entity details before this page goes public.</blockquote>
+
+<h2>1. Who we are</h2>
+<p>The Hermes Browser Extension is published by <strong>[CONFIRM: legal entity name, registered
+address]</strong>. Contact for privacy questions and data requests:
+<strong>[CONFIRM: privacy@…]</strong>. We are the "publisher"; the "runtime" is the Hermes agent
+instance <em>you</em> run or connect to, which is operated by you.</p>
+
+<h2>2. The short version</h2>
+<ul>
+  <li>We do <strong>not</strong> run a server that receives your browsing data.</li>
+  <li>We do <strong>not</strong> include analytics, advertising, fingerprinting or crash-reporting SDKs.</li>
+  <li>The extension has <strong>no user accounts</strong> and does not ask for credentials.</li>
+  <li>Browsing content moves only between your browser and the Hermes runtime <strong>you</strong>
+      configure — by default a loopback address on your own machine. If you point the extension at
+      someone else's runtime, that operator is responsible for that data — not us.</li>
+  <li>Settings live in your browser's own extension storage and never leave the device.</li>
+</ul>
+
+<h2>3. What the extension handles, and why</h2>
+<table>
+  <thead><tr><th>Data</th><th>When</th><th>Where it goes</th><th>Purpose</th></tr></thead>
+  <tbody>
+    <tr><td>Page content — DOM text, HTML, form field values, screenshot pixels of the attached tab</td>
+        <td>Only while you have a tab armed and the agent is working</td>
+        <td>To the Hermes runtime you configured (by default <code>127.0.0.1</code> / <code>localhost</code>
+            on your machine); to the model endpoint that runtime uses</td>
+        <td>To answer your instruction</td></tr>
+    <tr><td>The URL and title of tabs you attach</td><td>While attached</td><td>Same as above</td>
+        <td>To show the agent and you which tab is in scope</td></tr>
+    <tr><td>The agent's verbs and their results (navigate, click, type, DOM reads, screenshots)</td>
+        <td>Only while your runtime is connected and the session is armed</td><td>Same as above</td>
+        <td>Executing the instruction you gave your agent</td></tr>
+    <tr><td>Settings — relay address, access mode</td><td>On change</td>
+        <td><code>chrome.storage</code> on your device only</td><td>Remembering your configuration</td></tr>
+  </tbody>
+</table>
+<p>The extension ships <strong>no other outbound host</strong>. The only network endpoints in the
+package are the loopback gateway you configure (<code>http://127.0.0.1/*</code>,
+<code>http://localhost/*</code>) and whatever remote relay URL you configure yourself (there is no
+URL field in the UI: it is set over the extension's own message surface).
+There is no update-check phone-home, no model catalog fetch and no avatar/theme fetch in this build.</p>
+<p>We do not collect: name, email, address, payment data, health data, personal communications,
+location, keystroke logs, browsing history dumps, or a list of your installed extensions.</p>
+
+<h2>4. The <code>chrome.debugger</code> permission — what it means for your data</h2>
+<p>The extension asks for the <code>debugger</code> permission so it can send <em>trusted</em> input
+(real clicks and keystrokes) and read the DOM in a tab <strong>you explicitly attach</strong> —
+synthetic events from a content script are ignored by many sites, so this is the only reliable
+mechanism in Manifest V3.</p>
+<ul>
+  <li>Attaching happens only while <strong>your</strong> runtime is connected and the session is armed —
+      you start it by connecting your own runtime, and you can stop it at any moment.</li>
+  <li>While attached, Chrome shows a banner: "Hermes Browser Control is debugging this browser."
+      That banner is the control surface: <strong>Cancel</strong> on it detaches immediately, as does
+      the kill switch on the extension's control page (the toolbar popup).</li>
+  <li>The debugger session is scoped to the attached (leased) tab. We never attach silently, never
+      attach in the background, and never use it to debug other extensions or the browser itself.</li>
+  <li>Nothing captured through the debugger session is sent to the publisher. It is sent only to the
+      runtime you configured, for the task you asked for.</li>
+</ul>
+
+<h2>5. Where your data is processed</h2>
+<ul>
+  <li><strong>On your device</strong> — settings, session state, the control page.</li>
+  <li><strong>Your Hermes runtime</strong> — by default a loopback address on your own machine. If you
+      configure a remote relay, page content travels to that remote endpoint, and its operator becomes
+      a controller of that data.</li>
+  <li><strong>Your model provider</strong> — the runtime decides which model endpoint handles a request,
+      governed by <em>your</em> contract with the provider, not by us.</li>
+  <li><strong>Us</strong> — no processing. We operate no ingestion endpoint for extension data.</li>
+</ul>
+
+<h2>6. Sharing, selling, transferring</h2>
+<p>We do not sell or share personal data with third parties. There is no advertising, no data
+brokerage, and no "sale" as defined by the CCPA/CPRA. Data is not used for credit, insurance,
+employment or lending decisions. We do not use your data to train models.</p>
+
+<h2>7. Retention</h2>
+<p>On-device data lives until you delete it: <strong>chrome://extensions → Hermes Browser Control →
+Details → Remove</strong> clears extension storage, including settings. Attached-session data exists
+only in memory for the duration of the session. We retain nothing, because we receive nothing.</p>
+
+<h2>8. Your rights</h2>
+<p>Because we hold no personal data about you, there is no data for us to export, correct or erase on
+your behalf — the copy on your device is under your control (see §7). If you believe we hold data
+about you, write to <strong>[CONFIRM: privacy@…]</strong> and we will respond within 30 days.</p>
+
+<h2>9. Security</h2>
+<ul>
+  <li>The extension is a Manifest V3 package. <strong>No remote code</strong> is executed: every script
+      is shipped inside the package.</li>
+  <li>The operation guard (<code>extension/security/operation-guard.mjs</code>) refuses sensitive domains
+      (banking, crypto, password managers, email, government/tax, medical, checkout) and fails closed on a
+      stale or missing connection lease, before any command reaches the browser.</li>
+  <li>Self-hosted builds are signed with our key; store builds are signed by Google.</li>
+  <li>Traffic to a remote relay is expected to be TLS (<code>wss://</code>); loopback traffic never leaves
+      the machine.</li>
+  <li>Reporting a vulnerability: <strong>[CONFIRM: security contact / advisory URL]</strong>.</li>
+</ul>
+
+<h2>10. Children</h2>
+<p>The extension is a developer/productivity tool and is not directed at children under 13. We do not
+knowingly process data from children.</p>
+
+<h2>11. Changes to this policy</h2>
+<p>We will publish the updated policy at this URL with a new "Last updated" date, and note material
+changes in the release notes. Continued use after a material change means you accept the update.</p>
+
+<h2>12. Limited use</h2>
+<p>Our use of information received from Google APIs adheres to the Chrome Web Store User Data Policy,
+including the Limited Use requirements. In particular, data obtained through the extension's permissions
+is used only to provide or improve the single purpose of the extension — agent-driven browser control
+that the user initiates — and is not transferred to third parties except as needed for that purpose
+(the user's own configured runtime).</p>
+
+<hr />
+<h2>How to verify these claims</h2>
+<pre>bash release/scripts/hosts-inventory.sh          # every outbound host in the bundle
+grep -rn "analytics\|telemetry\|sentry\|segment\|amplitude\|posthog" extension/
+python -c "import json;print(json.load(open('extension/manifest.json'))['permissions'])"</pre>
+<p>If any of those produce a new host or a tracking SDK that is not listed in §3, <strong>update this
+policy before shipping</strong> — and if the host cannot be justified, remove the code instead.</p>
+</body>
+</html>

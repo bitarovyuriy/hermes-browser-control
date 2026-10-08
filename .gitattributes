@@ -1,0 +1,8 @@
+# Keep the repository's line endings identical everywhere: the extension, the tests and the
+# release scripts are written with LF, and Git should not rewrite them on checkout.
+* text=auto eol=lf
+
+# Binary assets
+*.png binary
+*.crx binary
+*.zip binary
