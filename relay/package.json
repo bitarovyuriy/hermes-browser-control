@@ -1,0 +1,17 @@
+{
+  "name": "hermes-browser-relay",
+  "version": "0.3.0",
+  "private": true,
+  "type": "module",
+  "description": "Loopback relay for the Hermes browser extension: pairs the extension with the runtime and forwards commands.",
+  "engines": {
+    "node": ">=22.6"
+  },
+  "scripts": {
+    "start": "node relay-cli.ts",
+    "relay": "node relay-cli.ts --port 47317"
+  },
+  "dependencies": {
+    "ws": "^8.18.0"
+  }
+}

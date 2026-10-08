@@ -18,7 +18,8 @@
  *   * the pairing ticket never reaches disk, storage, or the log sink.
  *
  * The relay is the real `relay/relay-cli.ts` from the loopback transport checkout
- * (default: `../../../../hermes-ext-transport`, override with HERMES_TRANSPORT_DIR); the
+ * (default: this repository's own `relay/`; HERMES_TRANSPORT_DIR points at the upstream
+ * transport checkout instead); the
  * extension is this directory's `extension/`.
  *
  * Opt-in native-messaging run — the real install path, no manual pairing string:
@@ -49,13 +50,30 @@ const here = path.dirname(fileURLToPath(import.meta.url));
 const EXT_DIR = path.resolve(here, '../../extension');
 const FIXTURES = path.resolve(here, 'fixtures');
 const OUT_DIR = path.resolve(here, 'artifacts');
-const TRANSPORT_DIR = process.env.HERMES_TRANSPORT_DIR
-  || path.resolve(here, '..', '..', '..', '..', 'hermes-ext-transport');
-const RELAY_CLI = path.join(TRANSPORT_DIR, 'relay', 'relay-cli.ts');
-if (!existsSync(RELAY_CLI)) {
-  console.error(`relay-cli.ts not found at ${RELAY_CLI}\nset HERMES_TRANSPORT_DIR to the transport checkout (it ships relay/relay-cli.ts)`);
+// The relay ships in this repository (`relay/`). HERMES_TRANSPORT_DIR overrides it with
+// the upstream transport checkout, which keeps its relay one level deeper (`relay/relay-cli.ts`).
+const RELAY_CLI = [
+  path.resolve(here, '..', '..', 'relay', 'relay-cli.ts'),
+  process.env.HERMES_TRANSPORT_DIR && path.join(process.env.HERMES_TRANSPORT_DIR, 'relay', 'relay-cli.ts'),
+  path.resolve(here, '..', '..', '..', '..', 'hermes-ext-transport', 'relay', 'relay-cli.ts'),
+].find((candidate) => candidate && existsSync(candidate));
+if (!RELAY_CLI) {
+  console.error('relay-cli.ts not found: expected relay/relay-cli.ts in this repository\n'
+    + 'set HERMES_TRANSPORT_DIR to the transport checkout (it ships relay/relay-cli.ts)');
   process.exit(3);
 }
+// Run the relay from the nearest directory that has its dependencies installed.
+function moduleRoot(start) {
+  let dir = path.dirname(start);
+  for (let i = 0; i < 4; i += 1) {
+    if (existsSync(path.join(dir, 'node_modules'))) return dir;
+    const parent = path.dirname(dir);
+    if (parent === dir) break;
+    dir = parent;
+  }
+  return path.dirname(start);
+}
+const TRANSPORT_DIR = moduleRoot(RELAY_CLI);
 const RELAY_LOG = path.join(OUT_DIR, 'relay.log');
 const REAL_SITE = process.env.HERMES_E2E_REAL_SITE || 'https://example.com/';
 const delay = (ms) => new Promise((r) => setTimeout(r, ms));

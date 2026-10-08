@@ -8,6 +8,8 @@ One loadable MV3 extension that combines three parts:
 | Loopback relay transport | `extension/vendor/transport/*` (pairing, WS session, backoff, heartbeat, command queue, redacting logger) wired into a single `src/relay-host.js` |
 | Operation guard | `security/operation-guard.mjs` + `lib/sensitive-domains.mjs`, wired onto the live command path by `src/admission.js` |
 
+    relay/                         loopback relay (vendored: pairs the extension with the
+                                   runtime, mints tickets, forwards commands)
     extension/                     loadable unpacked MV3 extension
       manifest.json                permissions: debugger, tabs, tabGroups, storage,
                                    alarms, nativeMessaging; host perms are a
@@ -155,9 +157,9 @@ which is why `--browsers` offers exactly those two families.
 
 Chrome is discovered from `CHROME_PATH`, then the local puppeteer cache, then the
 usual install locations — nothing is downloaded. `HEADED=1` runs windowed.
-`npm run test:relay` expects the transport checkout beside this repository
-(`../hermes-ext-transport` from here; override with `HERMES_TRANSPORT_DIR`); it starts
-the real `relay/relay-cli.ts` on a free port
+`npm run test:relay` uses the relay that ships in this repository (`relay/relay-cli.ts`;
+point `HERMES_TRANSPORT_DIR` at the upstream transport checkout to test against that
+instead). It starts the real relay on a free port
 and gives it a private `%LOCALAPPDATA%`, so concurrent runs never fight over the
 rendezvous file. The native suite needs the same checkout for the host-parity
 check in `npm test`.

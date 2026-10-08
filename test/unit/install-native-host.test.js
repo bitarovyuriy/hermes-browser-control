@@ -45,13 +45,12 @@ import {
 const here = path.dirname(fileURLToPath(import.meta.url));
 const MVP_ROOT = path.resolve(here, '../..');
 const EXT_DIR = path.join(MVP_ROOT, 'extension');
-// The transport checkout sits beside this repo by default, so the comparison against the
-// reference host implementation works on any machine that has both side by side.
-const TRANSPORT_HOST = path.join(
-  process.env.HERMES_TRANSPORT_DIR || path.resolve(MVP_ROOT, '..', '..', 'hermes-ext-transport'),
-  'relay',
-  'native-host.ts',
-);
+// Parity check against the relay's own host implementation: the in-repo copy first, then the
+// upstream transport checkout if HERMES_TRANSPORT_DIR points at one.
+const TRANSPORT_HOST = [
+  path.join(MVP_ROOT, 'relay', 'native-host.ts'),
+  process.env.HERMES_TRANSPORT_DIR && path.join(process.env.HERMES_TRANSPORT_DIR, 'relay', 'native-host.ts'),
+].find((candidate) => candidate && existsSync(candidate)) || path.join(MVP_ROOT, 'relay', 'native-host.ts');
 
 function tempDir(prefix) {
   return mkdtempSync(path.join(os.tmpdir(), prefix));

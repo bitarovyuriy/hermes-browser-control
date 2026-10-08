@@ -10,6 +10,12 @@ cd <path-to-this-repo>
 bash release/scripts/build-release.sh --unpacked-only --allow-dirty   # -> release/dist/unpacked
 ```
 
+Start the relay (it is what pairs the extension with your runtime):
+
+```
+cd relay && npm install && npm start -- --port 47317
+```
+
 Then in Chrome: `chrome://extensions` → Developer mode → **Load unpacked** →
 select `release/dist/unpacked` (or the source dir `extension/` for live editing).
 Click the toolbar action to open the control popup — the human stop. The agent itself is
